@@ -10,9 +10,6 @@ RUN apk del .tmp
 RUN mkdir /test_project
 COPY ./app /app
 WORKDIR /app
-COPY ./scripts /scripts
-
-RUN chmod +x /scripts/*
 
 RUN adduser -D user
 USER user

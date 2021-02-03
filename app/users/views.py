@@ -18,7 +18,7 @@ Modification des informations utilisateur
 def updateUser(request):
     user = request.user
 
-    if request.method == "POST":
+    if (request.method == "POST" and len(request.POST["email"]) > 0):
         user.email  = request.POST["email"]
         user.save()
 
@@ -26,7 +26,7 @@ def updateUser(request):
     else:
         return JsonResponse(
             {
-                "message": "Method Not Allowed"
+                "message": "Erreur interne"
             },
-            status=405
+            status=500
         )

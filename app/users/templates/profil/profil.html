@@ -35,7 +35,7 @@
                         
                         <div class="margin-top-20">
                             <label for="email">E-mail</label>
-                            <input type="email" name="email" id="email" class="form-control" required autofocus>
+                            <input type="email" name="email" id="email" class="form-control" onkeyup="checkEmail(this)" required autofocus>
                         </div>
                     </div>
 
@@ -86,13 +86,32 @@
         });
     }
 
+    function checkEmail(input) {
+        email_regex = /^[a-zA-Z0-9\-\.\_]{1,}@[a-zA-Z0-9\-\.\_]{1,}\.[a-z]{2,4}$/gm;
+        email = input.value;
+
+        condition = email_regex.test(email) && email.length > 0;
+
+        if(condition){
+            $("#updateUserSubmit").removeAttr('disabled');
+        }
+        else{
+            $("#updateUserSubmit").attr('disabled', 'disabled');
+        }
+    }
+
     $(document).ready(function() {
+        // Réinitialisation des champs à la fermeture de la fenêtre modale
         $('.modal').on('hidden.bs.modal', function () {
             $(".modal input").each(function() {
                 $(this).val("");
             });
             $(".successMessage").attr('hidden', true);
             $(".errorMessage").attr('hidden', true);
+        });
+
+        $('.modal').on('show.bs.modal', function () {
+            $("#updateUserSubmit").attr('disabled', 'disabled');
         });
     });
 </script>

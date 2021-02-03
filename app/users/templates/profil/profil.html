@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+    <div class="container margin-top-20vh">
+        <h2><i class="fa fa-user fa-fw"></i> Informations utilisateur</h2>
+        <hr />
+
+        <p><b>Nom d'utilisateur : </b>{{ user.username }}</p>
+        <p><b>Nom : </b>{{ user.last_name }}</p>
+        <p><b>Prénom : </b>{{ user.first_name }}</p>
+        <p><b>Email : </b><span id="emailText">{{ user.email }}</span></p>
+        <p><b>Dernière connexion : </b>{{ user.last_login | date:'d/m/Y à h:i:s' }}</span></p>
+        <p><b>Date inscription : </b>{{ user.date_joined | date:'d/m/Y à h:i:s' }}</span></p>
+
+        <div class="margin-top-20 text-align-center">
+            <button id="updateUserBtn" class="btn btn-lg bg-warning center-block" data-bs-toggle="modal" data-bs-target="#updateUserModal">
+                Modifier
+            </button>
+        </div>
+
+        <!-- Fenêtre Modale -->
+        <div class="modal fade" id="updateUserModal" tabindex="-1" role="dialog" aria-labelledby="updateUserModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="updateUserModalTitle">Modifier utilisateur</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="alert alert-danger errorMessage" hidden><i class="fas fa-times-circle"></i> Oups ! Une erreur est survenue...</div>
+                        <div class="alert alert-success successMessage" hidden><i class="fas fa-check-circle"></i> Opération effectuée avec succès !</div>
+                        
+                        <div class="margin-top-20">
+                            <label for="email">E-mail</label>
+                            <input type="email" name="email" id="email" class="form-control" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button id="updateUserSubmit" class="btn btn-lg bg-warning" onclick="updateUser()">
+                            Enregistrer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+    function updateUser(){
+        email = $("#email").val();
+        console.log(email);
+
+        spinnerHtml = '<div class="d-flex justify-content-center">'
+        spinnerHtml += '<div class="spinner-border" role="status">'
+        spinnerHtml += '<span class="visually-hidden">Loading...</span>'
+        spinnerHtml += '</div></div>';
+
+        // On désactive le bouton enregistrer et on ajoute le spinner tout au long du traitement
+        $("#updateUserSubmit").html(spinnerHtml);
+
+        // Configuration de l'en-tête pour éviter d'être éjecté par le firewall d'authentification
+        // Cf. base.html
+        setAjaxHeaders();
+
+        $.ajax({
+            url: '{% url "userUpdate" %}',
+            type: 'post',
+            data: 'email='+email,
+            dataType: 'json',
+            success: function(res){
+                $(".successMessage").removeAttr('hidden');
+                $("#emailText").text(res.email);
+                $("#updateUserSubmit").html("Enregistrer");
+            },
+            error: function(){
+                $(".errorMessage").removeAttr('hidden');
+                $("#updateUserSubmit").html("Enregistrer");
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        $('.modal').on('hidden.bs.modal', function () {
+            $(".modal input").each(function() {
+                $(this).val("");
+            });
+            $(".successMessage").attr('hidden', true);
+            $(".errorMessage").attr('hidden', true);
+        });
+    });
+</script>
+{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .container{
+            width: 50%;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #F9F9FA;
+            color: #413C49;
+            margin-top: 90px;
+            padding: 20px 40px 20px 40px;
+        }
+
+        .margin-top-20{
+            margin-top: 20px
+        }
+
+        .margin-top-20vh{
+            margin-top: 20vh
+        }
+
+        .text-align-center{
+            text-align: center;
+        }
+    </style>
+{% endblock %}

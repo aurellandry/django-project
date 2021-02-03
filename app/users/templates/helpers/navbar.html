@@ -1,0 +1,46 @@
+
+{#################################}
+{#      BARRE DE NAVIGATION      #}
+{#################################}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-warning">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">DJANGO TEST</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            </ul>
+
+            <ul class="nav navbar-right navbar-top-links">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userOptions" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-user fa-fw"></i> Bonjour {{ user.username }} <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user" aria-labelledby="userOptions">
+                            <!--
+                            <li>
+                                <a class="dropdown-item" href="{% url 'profil' %}"><i class="fa fa-user fa-fw"></i> Profil</a>
+                            </li>
+        
+                            <li><hr class="dropdown-divider"></li>
+                            -->
+        
+                            <li>
+                                <a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Connexion</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
